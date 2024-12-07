@@ -7,7 +7,27 @@ def read_incidence_matrix(filename: str) -> list[list]:
     :param str filename: path to file
     :returns list[list]: the incidence matrix of a given graph
     """
-    pass
+    edges = []
+
+    with open(filename, 'r', encoding='utf-8') as file:
+        file.readline()
+        for line in file:
+            line = line.strip().replace(';', '').replace('->', '').split()
+            if len(line) == 2:
+                vertex, directional_point = line
+                edges.append((int(vertex), int(directional_point)))
+
+    vertices = sorted(set(v for edge in edges for v in edge))
+    num_vertices = len(vertices)
+    num_edges = len(edges)
+
+    incidence_matrix = [[0] * num_edges for _ in range(num_vertices)]
+
+    for edge_index, (start, end) in enumerate(edges):
+        incidence_matrix[start][edge_index] = 1
+        incidence_matrix[end][edge_index] = -1
+
+    return incidence_matrix
 
 
 def read_adjacency_matrix(filename: str) -> list[list]:
@@ -15,7 +35,27 @@ def read_adjacency_matrix(filename: str) -> list[list]:
     :param str filename: path to file
     :returns list[list]: the adjacency matrix of a given graph
     """
-    pass
+    edges = []
+    vershyny = set()
+
+    with open(filename, 'r', encoding='utf-8') as file:
+        file.readline()
+        for line in file:
+            line = line.strip().replace(';', '').replace('->', '').split()
+            if len(line) == 2:
+                vertex, directional_point = line
+                edges.append((vertex, directional_point))
+                vershyny.update([vertex, directional_point])
+
+    vershyny = sorted(vershyny)
+    all_pairs = [[(i, j) for j in vershyny] for i in vershyny]
+
+    matrix = [
+        [1 if pair in edges else 0 for pair in row]
+        for row in all_pairs
+        ]
+
+    return matrix
 
 
 def read_adjacency_dict(filename: str) -> dict[int, list[int]]:
@@ -23,7 +63,18 @@ def read_adjacency_dict(filename: str) -> dict[int, list[int]]:
     :param str filename: path to file
     :returns dict: the adjacency dict of a given graph
     """
-    pass
+    dictofgraph = {}
+    with open(filename, 'r', encoding='utf-8') as file:
+        file.readline()
+        for line in file:
+            line = line.strip().replace(';', '').replace('->', '').split()
+            if len(line) == 2:
+                vertex, directional_point = map(int, line)
+                if vertex not in dictofgraph:
+                    dictofgraph[vertex] = []
+                dictofgraph[vertex].append(directional_point)
+
+    return dictofgraph
 
 
 def iterative_adjacency_dict_dfs(graph: dict[int, list[int]], start: int) -> list[int]:
