@@ -126,7 +126,7 @@ def iterative_adjacency_matrix_dfs(graph: list[list], start: int) ->list[int]:
 
 
 
-def recursive_adjacency_dict_dfs(graph: dict[int, list[int]], start: int) -> list[int]:
+def recursive_adjacency_dict_dfs(graph: dict[int, list[int]], start: int, visited=None) -> list[int]:
     """
     :param list[list] graph: the adjacency list of a given graph
     :param int start: start vertex of search
@@ -136,8 +136,14 @@ def recursive_adjacency_dict_dfs(graph: dict[int, list[int]], start: int) -> lis
     >>> recursive_adjacency_dict_dfs({0: [1, 2], 1: [0, 2, 3], 2: [0, 1], 3: []}, 0)
     [0, 1, 2, 3]
     """
-    pass
-
+    if visited is None: #робимо список вершин якщо його нема
+        visited = [] 
+    visited.append(start)#додаємо поточну вершину до списку відвіданих
+    for neighbor in graph[start]: #для кожного сусіда поточної вершини перевіряємо, чи він ще не відвіданий
+        if neighbor not in visited:
+            recursive_adjacency_dict_dfs(graph, neighbor, visited) #викликаємо функцію для не відвіданого сусіда рекурсивно
+    return visited
+# print(recursive_adjacency_dict_dfs({0: [1, 2], 1: [0, 2], 2: [0, 1]}, 0))
 
 
 
@@ -151,8 +157,18 @@ def iterative_adjacency_dict_bfs(graph: dict[int, list[int]], start: int) -> lis
     >>> iterative_adjacency_dict_bfs({0: [1, 2], 1: [0, 2, 3], 2: [0, 1], 3: []}, 0)
     [0, 1, 2, 3]
     """
-    pass
-
+    visited = []
+    next_to_visit = [start] #робимо стек з початковою вершиною
+    while next_to_visit: # ітеруємося поки черга не пуста
+        vertex = next_to_visit.pop(0) #першу вершину з черги
+        if vertex not in visited: #якщо вершинка ще не відвідана, додаємо її до списку відвіданих
+            visited.append(vertex)
+            for neighbour in graph[vertex]: # додаю до черги всіх сусідів, яких ще не відвідали і які не знаходяться в черзі
+                 if neighbour not in visited and neighbour not in next_to_visit:
+                    next_to_visit.append(neighbour)
+            
+    return visited
+#print(iterative_adjacency_dict_bfs({0: [1, 2], 1: [0, 2], 2: [0, 1]}, 0))
 
 def iterative_adjacency_matrix_bfs(graph: list[list[int]], start: int) ->list[int]:
     """
@@ -164,12 +180,21 @@ def iterative_adjacency_matrix_bfs(graph: list[list[int]], start: int) ->list[in
     >>> iterative_adjacency_matrix_bfs([[0, 1, 1, 0], [1, 0, 1, 1], [1, 1, 0, 0], [0, 0, 0, 0]], 0)
     [0, 1, 2, 3]
     """
-    pass
+    visited = []
+    next_to_visit = [start]
+    while next_to_visit:
+        vertex = next_to_visit.pop(0)
+        if vertex not in visited:
+            visited.append(vertex)
+            for i, connected in enumerate(graph[vertex]): #додаємо до черги всіх сусідів (індекси сусідів), які суміжні з поточною вершиною
+                if connected == 1 and i not in visited and i not in next_to_visit:
+                    next_to_visit.append(i)
+    return visited
+# print(iterative_adjacency_matrix_bfs([[0, 1, 1], [1, 0, 1], [1, 1, 0]], 0))
 
 
 
-
-def recursive_adjacency_matrix_bfs(graph: list[list[int]], start: int) ->list[int]:
+def recursive_adjacency_matrix_bfs(graph: list[list[int]], start: int, visited=None, next_to_visit=None) ->list[int]:
     """
     :param dict graph: the adjacency matrix of a given graph
     :param int start: start vertex of search
@@ -179,7 +204,20 @@ def recursive_adjacency_matrix_bfs(graph: list[list[int]], start: int) ->list[in
     >>> recursive_adjacency_matrix_bfs([[0, 1, 1, 0], [1, 0, 1, 1], [1, 1, 0, 0], [0, 0, 0, 0]], 0)
     [0, 1, 2, 3]
     """
-    pass
+    if visited is None:
+        visited = []
+    if next_to_visit is None:
+        next_to_visit = [start]
+    if not next_to_visit:
+        return visited
+    vertex = next_to_visit.pop(0)
+    if vertex not in visited:
+        visited.append(vertex)
+        neighbors = [i for i, is_connected in enumerate(graph[vertex]) if is_connected == 1 and i not in visited]
+        next_to_visit.extend(neighbors)
+
+    return recursive_adjacency_matrix_bfs(graph, start, visited, next_to_visit)
+# print(recursive_adjacency_matrix_bfs([[0, 1, 1], [1, 0, 1], [1, 1, 0]], 0))
 
 
 def adjacency_matrix_radius(graph: list[list]) -> int:
