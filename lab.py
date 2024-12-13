@@ -1,6 +1,10 @@
 """
 Lab 2. Mandryk Sophia and Pasternak Yuliia
 """
+import time
+import random
+import matplotlib.pyplot as plt
+
 
 def read_incidence_matrix(filename: str) -> list[list]:
     """
@@ -101,7 +105,7 @@ def iterative_adjacency_dict_dfs(graph: dict[int, list[int]], start: int) -> lis
     return visited
 
 
-def iterative_adjacency_matrix_dfs(graph: list[list], start: int) ->list[int]:
+def iterative_adjacency_matrix_dfs(graph: list[list], start = 0) ->list[int]:
     """
     :param dict graph: the adjacency matrix of a given graph
     :param int start: start vertex of search
@@ -179,7 +183,7 @@ def iterative_adjacency_dict_bfs(graph: dict[int, list[int]], start: int) -> lis
     return visited
 
 
-def iterative_adjacency_matrix_bfs(graph: list[list[int]], start: int) ->list[int]:
+def iterative_adjacency_matrix_bfs(graph: list[list[int]], start = 0) ->list[int]:
     """
     :param dict graph: the adjacency matrix of a given graph
     :param int start: start vertex of search
@@ -204,7 +208,7 @@ def iterative_adjacency_matrix_bfs(graph: list[list[int]], start: int) ->list[in
     return visited
 
 
-def recursive_adjacency_matrix_bfs(graph: list[list[int]], start: int,\
+def recursive_adjacency_matrix_bfs(graph: list[list[int]], start = 0,\
                                    visited=None, next_to_visit=None) ->list[int]:
     """
     :param dict graph: the adjacency matrix of a given graph
@@ -303,6 +307,71 @@ def adjacency_dict_radius(graph: dict[int: list[int]]) -> int:
 
     return min(eccentricities)
 
+
+def generate_matrix(n:int)->list[list]:
+    """
+    Generates random matrix from given number.
+
+    Args:
+        n (int): Size of the matrix.
+
+    Returns:
+        list[list]: Returned matrix.
+    """
+    return [[random.randint(0,1) for i in range(n)] for i in range(n)]
+
+
+def timerok(func, arg):
+    """
+    Calculates running time.
+    """
+    start_time = time.perf_counter()
+    for _ in range(10):
+        func(arg)
+    end_time = time.perf_counter()
+    return (end_time - start_time) / 10
+
+
+
+def visualize_execution_times(functions, sizes):
+    """
+    Visualizes execution times of multiple functions for varying input sizes.
+
+    Args:
+        functions (list): List of functions to test.
+        sizes (list): List of input sizes to generate matrices.
+    """
+    _, axes = plt.subplots(1, len(functions), figsize=(16, 6), sharey=True)
+
+    for ax, function in zip(axes, functions):
+        times = []
+        for size in sizes:
+            matrix = generate_matrix(size)
+            time_taken = timerok(function, matrix)
+            times.append(time_taken)
+
+
+        ax.plot(sizes, times, label=f"{function.__name__}", marker="o")
+
+
+        ax.set_title(f"{function.__name__}", fontsize=14)
+        ax.set_xlabel("Matrix Size (n x n)", fontsize=12)
+        ax.set_ylabel("Execution Time (seconds)", fontsize=12)
+        ax.legend(fontsize=10)
+        ax.grid(alpha=0.4)
+    plt.tight_layout()
+    plt.show()
+
+
+matrix_sizes = [10, 20, 30]
+functions_to_test = [
+    iterative_adjacency_matrix_bfs,
+    iterative_adjacency_matrix_dfs,
+    recursive_adjacency_matrix_bfs,
+    adjacency_matrix_radius
+]
+
+visualize_execution_times(functions_to_test, matrix_sizes)
 
 
 
