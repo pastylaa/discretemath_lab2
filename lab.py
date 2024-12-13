@@ -1,6 +1,7 @@
 """
 Lab 2. Mandryk Sophia and Pasternak Yuliia
 """
+
 import time
 import random
 import matplotlib.pyplot as plt
@@ -208,33 +209,6 @@ def iterative_adjacency_matrix_bfs(graph: list[list[int]], start = 0) ->list[int
     return visited
 
 
-def recursive_adjacency_matrix_bfs(graph: list[list[int]], start = 0,\
-                                   visited=None, next_to_visit=None) ->list[int]:
-    """
-    :param dict graph: the adjacency matrix of a given graph
-    :param int start: start vertex of search
-    :returns list[int]: the bfs traversal of the graph
-    >>> recursive_adjacency_matrix_bfs([[0, 1, 1], [1, 0, 1], [1, 1, 0]], 0)
-    [0, 1, 2]
-    >>> recursive_adjacency_matrix_bfs([[0, 1, 1, 0], [1, 0, 1, 1], [1, 1, 0, 0], [0, 0, 0, 0]], 0)
-    [0, 1, 2, 3]
-    """
-    if visited is None:
-        visited = []
-    if next_to_visit is None:
-        next_to_visit = [start]
-    if not next_to_visit:
-        return visited
-    vertex = next_to_visit.pop(0)
-    if vertex not in visited:
-        visited.append(vertex)
-        neighbors = [i for i, is_connected in enumerate(graph[vertex])\
-                     if is_connected == 1 and i not in visited]
-        next_to_visit.extend(neighbors)
-
-    return recursive_adjacency_matrix_bfs(graph, start, visited, next_to_visit)
-
-
 def adjacency_matrix_radius(graph: list[list]) -> int:
     """
     :param list[list] graph: the adjacency matrix of a given graph
@@ -272,6 +246,7 @@ def adjacency_matrix_radius(graph: list[list]) -> int:
         eccentricities.append(max(distances.values()))
 
     return min(eccentricities)
+
 
 def adjacency_dict_radius(graph: dict[int: list[int]]) -> int:
     """
@@ -318,7 +293,7 @@ def generate_matrix(n:int)->list[list]:
     Returns:
         list[list]: Returned matrix.
     """
-    return [[random.randint(0,1) for i in range(n)] for i in range(n)]
+    return [[random.randint(0,1) for _ in range(n)] for _ in range(n)]
 
 
 def timerok(func, arg):
@@ -330,7 +305,6 @@ def timerok(func, arg):
         func(arg)
     end_time = time.perf_counter()
     return (end_time - start_time) / 10
-
 
 
 def visualize_execution_times(functions, sizes):
@@ -367,7 +341,6 @@ matrix_sizes = [10, 20, 30]
 functions_to_test = [
     iterative_adjacency_matrix_bfs,
     iterative_adjacency_matrix_dfs,
-    recursive_adjacency_matrix_bfs,
     adjacency_matrix_radius
 ]
 
