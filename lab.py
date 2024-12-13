@@ -1,6 +1,7 @@
 """
 Lab 2. Mandryk Sophia and Pasternak Yuliia
 """
+
 import time
 import random
 import matplotlib.pyplot as plt
