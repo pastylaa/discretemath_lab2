@@ -197,7 +197,7 @@ def iterative_adjacency_matrix_bfs(graph: list[list[int]], start: int) ->list[in
         if vertex not in visited:
             visited.append(vertex)
             for i, connected in enumerate(graph[vertex]):
-                #додаємо до черги всіх сусідів (індекси сусідів), які суміжні з поточною вершиною >>>
+                #додаємо до черги всіх сусідів (індекси сусідів),які суміжні з поточною вершиною >>>
                 if connected == 1 and i not in visited and i not in next_to_visit:
                     next_to_visit.append(i)
 
